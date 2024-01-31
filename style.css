@@ -1,0 +1,15 @@
+body, html {
+    height: 100vh;
+}
+body {
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+canvas {
+    border: 1px solid black;
+    height: 600px;
+    width: 600px;
+}
