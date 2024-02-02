@@ -7,7 +7,7 @@ let drag = false;
 const one_unit = 10;//in pixels
 let camera_x = canvas.width/2;
 let camera_y = canvas.height/2;
-
+const pos = document.querySelector('h1#pos');
 
 class CoordinateSystem {
     constructor(){//x, y, w, h, color) {
@@ -20,16 +20,15 @@ class CoordinateSystem {
 
     draw_horizontal(ctx) {
         //horizontal line
-        ctx.color
         ctx.moveTo(-1000, 0);
         ctx.lineTo(1000, 0);
         ctx.stroke();
-        ctx.lineWidth = 0.25;
         //drawing units(optimize by the viewport)
-        for(let i = -500/10; i<500/10; i++) {
+        //the 0.5 is for scale = 2 :D there's a problem when you drag to the right maybe some absolute values would fix it? or it's because im not considering the scale
+        for(let i = Math.floor((-canvas.width/2 - move_x)/20*(1/scale)); i<Math.ceil((canvas.width/2 - move_x)/20*(1/scale)); i++) {
             if(i) {
-                ctx.moveTo(10 * i, 5);
-                ctx.lineTo(10*i, -5);
+                ctx.moveTo(20 * i, 5);
+                ctx.lineTo(20*i, -5);
                 ctx.stroke();
             }
         }
@@ -40,18 +39,19 @@ class CoordinateSystem {
         ctx.moveTo(0, -1000);
         ctx.lineTo(0, 1000);
         ctx.stroke();
-        ctx.lineWidth = 0.25;
-        for(let i = -500/10; i<500/10; i++) {
+        for(let i = Math.floor((-canvas.height/2 - move_y)/20*(1/scale)); i<Math.ceil((canvas.height/2 - move_y)/20*(1/scale))+5; i++) {
             if(i) {
-                ctx.moveTo(5, 10*i);
-                ctx.lineTo(-5, 10*i);
+                ctx.moveTo(5, 20*i);
+                ctx.lineTo(-5, 20*i);
                 ctx.stroke();
             }
         }
     }
     draw_object(ctx) {
+        ctx.lineWidth = 0.25;
         this.draw_horizontal(ctx);
         this.draw_vertical(ctx);
+        ctx.lineWidth = 1;
     }
 }
 
@@ -62,13 +62,13 @@ function draw() {
       ctx.reset();
       ctx.translate(canvas.width/2 + move_x,canvas.height/2 + move_y);
       ctx.scale(scale,scale);
-      
       ctx.strokeRect(0, 0, 5, 5);
       ctx.strokeRect(15, 15, 5, 5);
       ctx.strokeRect(15, 15, 5, 5);
       ctx.strokeRect(-25, 0, 25, 25);
       const grid = new CoordinateSystem();
       grid.draw_object(ctx);
+      ctx.strokeRect(-(camera_x - 500)*(1/scale),-(camera_y-500)*(1/scale), 5, 5);//-(camera_x - 500)*(1/scale) is the center x coordinateo f the center of the vieport in the coordinate system
       ctx.strokeRect(-(camera_x - 500)*0.5,-(camera_y-500)*0.5, 5, 5);//0.5 for scale = 2
     }
 }
@@ -80,7 +80,7 @@ function resize(event) {
     
   
     // Restrict scale
-    scale = Math.min(Math.max(1, scale), 8);
+    scale = Math.min(Math.max(0.1, scale), 16);
     scale = Math.round(scale * 10)/10;
     console.log(scale);
   
@@ -91,6 +91,7 @@ function resize(event) {
         draw();
     }
     console.log('xd');
+    pos.innerHTML = `X: ${move_x}, Y: ${move_y} ZOOM: ${scale}`;
 }
 
 window.addEventListener("load", draw);
@@ -108,6 +109,7 @@ canvas.addEventListener('mousemove', (e) => {
         console.log(camera_x, camera_y);
         draw();
     }
+    pos.innerHTML = `X: ${move_x}, Y: ${move_y} ZOOM: ${scale}`;
 })
 canvas.addEventListener('mouseup', () => {
     drag = false;
