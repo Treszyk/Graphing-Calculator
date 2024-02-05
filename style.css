@@ -1,5 +1,7 @@
 body, html {
     height: 100vh;
+    overflow-y: hidden;
+    background-color: rgb(46, 46, 46);
 }
 body {
     margin: 0px;
@@ -9,19 +11,23 @@ body {
     align-items: center;
 }
 canvas {
-    border: 1px solid black;
-    height: 600px;
-    width: 600px;
+    border-left: 1px solid white;
+    height: 125%;
+    max-width: 75%;
+
 }
 div#holder {
     display: flex;
-    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
 }
 h1 {
     display: flex;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
+    color: #adadad;
  
     /*
       Introduced in IE 10.

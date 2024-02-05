@@ -1,6 +1,6 @@
 const canvas = document.querySelector("canvas");
-const size = 1000;
-let scale = 1;
+const size = canvas.height;
+let scale = 4;
 let scale_ratio = 1;
 let move_x = 0;
 let move_y = 0;
@@ -33,10 +33,11 @@ class CoordinateSystem {
                 ctx.lineTo(unit_size * i, -5);
                 ctx.font = "12px serif";
                 ctx.textAlign = 'center';
-                ctx.fillText(`${i}`, unit_size * i, 14);
-                ctx.stroke();
-            }
+                ctx.fillStyle = "#adadad";
+                ctx.fillText(`${i}`, unit_size * i, 14);      
+            }  
         }
+        ctx.stroke();
     }
 
     draw_vertical(ctx) {
@@ -51,10 +52,12 @@ class CoordinateSystem {
                 ctx.lineTo(-5, unit_size*i);
                 ctx.font = "12px serif";
                 ctx.textAlign = 'center';
-                ctx.fillText(`${i*-1}`, -12 - offset, unit_size * i + 3);
-                ctx.stroke();
+                ctx.fillStyle = "#adadad"; //<======= here
+                ctx.fillText(`${i*-1}`, -12 - offset, unit_size * i + 3);     
             }
+            
         }
+        ctx.stroke();
     }
 
     draw_function_graph(ctx) {
@@ -76,11 +79,12 @@ function draw() {
       ctx.reset();
       ctx.translate(canvas.width/2 + move_x*scale,canvas.height/2 + move_y*scale);
       ctx.scale(scale,scale);
+      ctx.strokeStyle = "white";
       const grid = new CoordinateSystem();
       grid.draw_object(ctx);
       ctx.strokeRect(1000,0, 20, 20);
-      ctx.strokeRect(-(camera_x*scale - 500*scale)*(1/scale),-(camera_y*scale-500*scale)*(1/scale), 5, 5);//-(camera_x - 500)*(1/scale) is the center x coordinateo f the center of the vieport in the coordinate system
-      ctx.strokeRect(-(camera_x - 500),-(camera_y-500), 5, 5);
+      ctx.strokeRect(-(camera_x*scale - size/2*scale)*(1/scale),-(camera_y*scale-size/2*scale)*(1/scale), 5, 5);//-(camera_x - 500)*(1/scale) is the center x coordinateo f the center of the vieport in the coordinate system
+      ctx.strokeRect(-(camera_x - size/2),-(camera_y-size/2), 5, 5);
     }
 }
 
