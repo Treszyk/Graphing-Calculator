@@ -1,5 +1,6 @@
 const canvas = document.querySelector("canvas");
 const size = canvas.height;
+const math_input = document.querySelector("input#function");
 let scale = 4;
 let scale_ratio = 1/scale;
 let move_x = 0;
@@ -60,8 +61,34 @@ class CoordinateSystem {
         ctx.stroke();
     }
 
+    //isValidMathExpression(input) {
+    //    const regex = /^([0-9+\-*/^().\se\sx]*|((log|sqrt|sin|cos|tan|asin|acos|atan|abs)\s*\([0-9+\-*/^().\se\sx]*\)))*/;
+    //    return regex.test(input);
+    //}
+    
     draw_function_graph(ctx) {
 
+        let user_equation = math_input.value;
+        //if(this.isValidMathExpression(user_equation)) {
+        try {
+            ctx.fillStyle = "red"
+            let values = []
+            const expr = math.parse(user_equation);
+            const compiled_expr = expr.compile();
+            console.log(compiled_expr.evaluate({x:1}));
+            for(let i = Math.floor((-canvas.width/2 - move_x*scale)/unit_size*scale_ratio); i<Math.ceil((canvas.width/2 - move_x*scale)/unit_size*scale_ratio); i+=0.005) {
+                values.push([i, compiled_expr.evaluate({x:i})]);
+            }
+            values.forEach((cords) => {
+                ctx.fillRect((cords[0])*unit_size-0.5, (-cords[1])*unit_size-0.5, 1, 1);
+            });
+        } catch (e) {
+            console.log(e);
+        }
+
+        //}
+        //else
+        //    console.log('invalid expression', user_equation);    
     }
 
     draw_object(ctx) {
@@ -85,6 +112,7 @@ function draw() {
       ctx.strokeRect(1000,0, 20, 20);
       ctx.strokeRect(-(camera_x*scale - size/2*scale)*(1/scale),-(camera_y*scale-size/2*scale)*(1/scale), 5, 5);//-(camera_x - 500)*(1/scale) is the center x coordinateo f the center of the vieport in the coordinate system
       ctx.strokeRect(-(camera_x - size/2),-(camera_y-size/2), 5, 5);
+      grid.draw_function_graph(ctx);
     }
 }
 
@@ -109,7 +137,7 @@ function resize(event) {
     console.log('xd');
     pos.innerHTML = `X: ${move_x}, Y: ${move_y} ZOOM: ${scale}`;
 }
-
+pos.innerHTML = `X: ${move_x}, Y: ${move_y} ZOOM: ${scale}`;
 window.addEventListener("load", draw);
 canvas.onwheel = resize;
 
@@ -133,3 +161,5 @@ canvas.addEventListener('mouseup', () => {
 document.addEventListener('mouseup', () => {
     drag = false;
 })
+
+math_input.addEventListener('input', draw);

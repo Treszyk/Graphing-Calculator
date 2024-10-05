@@ -20,7 +20,10 @@ div#holder {
     display: flex;
     height: 100%;
     width: 100%;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 20px;
 }
 h1 {
     display: flex;
